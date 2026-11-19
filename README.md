@@ -24,3 +24,8 @@ Deny list built from blocklists that are not published as RPZ zone files. Each e
 - Names that a loaded RPZ zone already blocks, or whose parent domain is listed, are left out of `deny-list.txt`.
 
 Build details and automation: [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+- Copyright (C) 2026 Sujoy Das.
+- Licensed under the GNU General Public License, version 3 or (at your option) any later version; see `LICENSE`.

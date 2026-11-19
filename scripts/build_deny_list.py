@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Rebuild deny-list.txt from personal-deny-list.txt and the sources in blocklists.json."""
 
 import json
