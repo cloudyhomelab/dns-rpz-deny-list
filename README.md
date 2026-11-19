@@ -42,3 +42,11 @@ python3 scripts/build_deny_list.py
   - `2`: written with errors, merged with `deny-list.txt.previous`
 - Each error is one stderr line starting with `error: `, e.g. for a CI job summary: `grep '^error: ' stderr.log >> "$GITHUB_STEP_SUMMARY"`. Other stderr lines (counts, rejected samples, `warning: ` for the `max_entries` cut) are informational.
 - Personal entries reported as already blocked can be removed.
+
+## Automation
+
+- `.github/workflows/update-deny-list.yml` runs the build daily, on manual dispatch, and on pushes to `main` that change `personal-deny-list.txt`, `blocklists.json` or the script.
+- A changed list is committed to `chore/update-deny-list` and proposed as a pull request to `main`; each run replaces that branch and updates the open pull request.
+- The job summary lists per-source counts and every `error: ` line; the pull request description repeats the errors.
+- Exit code `2` still opens the pull request, then fails the job so the errors get noticed; exit code `1` fails before any change.
+- `peter-evans/create-pull-request` commits and opens the pull request with a GitHub App token, so commits are signed as the app and the pull request triggers other workflows; with no changes left, it deletes the branch. Secrets: `CLOUDYHOME_BOT_CLIENT_ID`, `CLOUDYHOME_BOT_PRIVATE_KEY`; the app needs read and write access to contents and pull requests on this repository.
