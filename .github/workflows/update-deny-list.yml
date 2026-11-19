@@ -1,0 +1,99 @@
+name: Update deny list
+
+on:
+  schedule:
+    - cron: "17 4 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - personal-deny-list.txt
+      - blocklists.json
+      - scripts/build_deny_list.py
+
+# Writes go through the app token, so the default token only needs to read.
+permissions:
+  contents: read
+
+concurrency:
+  group: update-deny-list
+  cancel-in-progress: false
+
+env:
+  BRANCH: chore/update-deny-list
+
+jobs:
+  update:
+    # The pull request always targets main, so a dispatch from another branch would propose that branch's state.
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Create bot token
+        id: app-token
+        uses: actions/create-github-app-token@f418cff399f7aef4c2f0ad47e25ca7a6abbdd6fc # v3.4.0
+        with:
+          client-id: ${{ secrets.CLOUDYHOME_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.CLOUDYHOME_BOT_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+
+      - name: Build deny list
+        id: build
+        run: |
+          status=0
+          python3 scripts/build_deny_list.py 2> "$RUNNER_TEMP/stderr.log" || status=$?
+          cat "$RUNNER_TEMP/stderr.log" >&2
+          grep '^error: ' "$RUNNER_TEMP/stderr.log" > "$RUNNER_TEMP/errors.log" || true
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Deny list build"
+            echo
+            echo "Exit code: \`$status\`"
+            echo
+            grep -E '^(source|loaded zone|merged) ' "$RUNNER_TEMP/stderr.log" | sed 's/^/- /' || true
+            if [ -s "$RUNNER_TEMP/errors.log" ]; then
+              echo
+              echo "### Errors"
+              echo
+              sed 's/^error: /- /' "$RUNNER_TEMP/errors.log"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+          [ "$status" -ne 1 ]
+
+      - name: Write pull request description
+        run: |
+          {
+            echo "- Regenerated \`deny-list.txt\` from \`personal-deny-list.txt\` and \`blocklists.json\`."
+            if [ -s "$RUNNER_TEMP/errors.log" ]; then
+              echo "- Built with errors, so entries from \`deny-list.txt.previous\` were merged in:"
+              sed 's/^error: /  - /' "$RUNNER_TEMP/errors.log"
+            fi
+          } > "$RUNNER_TEMP/body.md"
+
+      - name: Open or update pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          sign-commits: true
+          add-paths: |
+            deny-list.txt
+            deny-list.txt.previous
+          branch: ${{ env.BRANCH }}
+          base: main
+          delete-branch: true
+          commit-message: "chore: update deny list"
+          title: "chore: update deny list"
+          body-path: ${{ runner.temp }}/body.md
+
+      - name: Fail on build errors
+        if: steps.build.outputs.status == '2'
+        run: |
+          echo "::error::Deny list was built with errors; see the job summary."
+          exit 1

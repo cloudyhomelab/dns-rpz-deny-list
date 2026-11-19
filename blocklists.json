@@ -1,0 +1,24 @@
+{
+  "max_entries": 50000,
+  "sources": [],
+  "loaded_rpz_zones": [
+    {
+      "name": "hagezi-multi",
+      "url": "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/rpz/multi.txt"
+    }
+  ],
+  "hosts_ignore": [
+    "localhost",
+    "localhost.localdomain",
+    "local",
+    "broadcasthost",
+    "ip6-localhost",
+    "ip6-loopback",
+    "ip6-localnet",
+    "ip6-mcastprefix",
+    "ip6-allnodes",
+    "ip6-allrouters",
+    "ip6-allhosts",
+    "0.0.0.0"
+  ]
+}
