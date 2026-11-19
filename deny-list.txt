@@ -1,0 +1,2 @@
+# curated RPZ deny list
+flightnetwork.com
