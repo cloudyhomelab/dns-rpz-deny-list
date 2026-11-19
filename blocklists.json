@@ -1,10 +1,30 @@
 {
   "max_entries": 50000,
-  "sources": [],
+  "sources": [
+    {
+      "name": "lg-tv-strict-wildcard",
+      "url": "https://raw.githubusercontent.com/furkan-bayrak/lg-tv-blocklist/main/lists/strict-wildcard.txt",
+      "format": "pihole-regex",
+      "license": "CC-BY-4.0",
+      "author": "furkan-bayrak",
+      "homepage": "https://github.com/furkan-bayrak/lg-tv-blocklist"
+    },
+    {
+      "name": "lg-tv-strict-domains",
+      "url": "https://raw.githubusercontent.com/furkan-bayrak/lg-tv-blocklist/main/lists/strict-domains.txt",
+      "format": "domains",
+      "license": "CC-BY-4.0",
+      "author": "furkan-bayrak",
+      "homepage": "https://github.com/furkan-bayrak/lg-tv-blocklist"
+    }
+  ],
   "loaded_rpz_zones": [
     {
       "name": "hagezi-multi",
-      "url": "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/rpz/multi.txt"
+      "url": "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/rpz/multi.txt",
+      "license": "GPL-3.0-only",
+      "author": "HaGeZi",
+      "homepage": "https://github.com/hagezi/dns-blocklists"
     }
   ],
   "hosts_ignore": [
