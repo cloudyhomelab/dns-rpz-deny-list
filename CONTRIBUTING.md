@@ -11,8 +11,8 @@ python3 scripts/build_deny_list.py
 - A name counts as already blocked if a loaded zone blocks it and all its subdomains: a `*.parent` record, or both `name` and `*.name` records.
 - Every input is processed independently; a failure discards only what it affects:
   - an invalid name is skipped; each source's rejections are counted and sampled
-  - an unreadable source or `personal-deny-list.txt` is skipped
-  - an unreadable or empty loaded zone is skipped, so names it blocks may be repeated here
+  - an unreadable source or `personal-deny-list.txt` is skipped, as is a source missing `license`, `author` or `homepage`, since it could not be credited
+  - an unreadable or empty loaded zone is skipped, as is one missing `license`, `author` or `homepage`, so names it blocks may be repeated here
   - entries beyond `max_entries` are dropped: first those from `deny-list.txt.previous`, then sources from the last one in `sources` backwards; valid personal entries are never dropped, even if they alone exceed the cap
 - Errors (a skipped source, personal list or loaded zone) decide what is written:
   - no errors: `deny-list.txt` and `deny-list.txt.previous` both get the new list

@@ -10,8 +10,8 @@ Deny list built from blocklists that are not published as RPZ zone files. Each e
 
 - `personal-deny-list.txt`: hand-entered domains, one per line, `#` comments allowed.
 - `blocklists.json`:
-  - `sources`: `{ "name", "url", "format" }` where `format` is `domains` (one name per line), `hosts` (`0.0.0.0 name`), `adblock` (`||name^`; other rule types are ignored) or `pihole-regex` (`(\.|^)zone$` and `^host$` rules; any other regex is rejected, since it cannot be listed as names).
-  - `loaded_rpz_zones`: `{ "name", "url" }` of each RPZ zone file whose blocked names are left out.
+  - `sources`: `{ "name", "url", "format", "license", "author", "homepage" }` where `license` is an SPDX identifier and `format` is `domains` (one name per line), `hosts` (`0.0.0.0 name`), `adblock` (`||name^`; other rule types are ignored) or `pihole-regex` (`(\.|^)zone$` and `^host$` rules; any other regex is rejected, since it cannot be listed as names).
+  - `loaded_rpz_zones`: `{ "name", "url", "license", "author", "homepage" }` of each RPZ zone file whose blocked names are left out.
   - `max_entries`: the most entries written; valid personal entries are always kept.
   - `hosts_ignore`: names in hosts files that are not blocklist entries.
 - `deny-list.txt`: generated; do not edit.
@@ -29,3 +29,4 @@ Build details and automation: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 - Copyright (C) 2026 Sujoy Das.
 - Licensed under the GNU General Public License, version 3 or (at your option) any later version; see `LICENSE`.
+- Entries in `deny-list.txt` and `deny-list.txt.previous` that come from `sources` keep their source's license. The header of each file credits every source and loaded RPZ zone the list is built from (name, author, license, homepage) and states the changes made, generated from `blocklists.json`.
