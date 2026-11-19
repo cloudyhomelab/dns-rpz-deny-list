@@ -32,6 +32,8 @@ MAX_NAME_LENGTH = 253
 MAX_LABEL_LENGTH = 63
 
 ADBLOCK_RULE = re.compile(r"^\|\|([^/^$|]+)\^$")
+# Only "(\.|^)zone$" and "^host$" mean a fixed name; any other regex cannot be listed as names.
+PIHOLE_NAME_RULE = re.compile(r"^(?:\(\\\.\|\^\)|\^)((?:[a-z0-9_-]+\\\.)*[a-z0-9_-]+)\$$")
 # RPZ actions that block; rpz-passthru. and local-data answers do not.
 RPZ_BLOCK_TARGETS = {".", "*.", "rpz-drop."}
 # Lower rank wins when max_entries forces a cut; sources rank 1.. in config order, deny-list.txt.previous after them.
@@ -93,6 +95,18 @@ def candidates_adblock(text: str) -> list[str]:
         match = ADBLOCK_RULE.match(line.strip())
         if match:
             names.append(match.group(1))
+    return names
+
+
+def candidates_pihole_regex(text: str) -> list[str]:
+    """Return the fixed names; other rules are returned as written so validation rejects and reports them."""
+    names = []
+    for line in text.splitlines():
+        rule = line.strip()
+        if not rule or rule.startswith("#"):
+            continue
+        match = PIHOLE_NAME_RULE.match(rule)
+        names.append(match.group(1).replace("\\.", ".") if match else rule)
     return names
 
 
@@ -186,6 +200,8 @@ def candidates_for(source: dict, hosts_ignore: set[str]) -> list[str]:
         return candidates_hosts(text, hosts_ignore)
     if source_format == "adblock":
         return candidates_adblock(text)
+    if source_format == "pihole-regex":
+        return candidates_pihole_regex(text)
     raise BuildError(f"unknown format {source_format!r}")
 
 

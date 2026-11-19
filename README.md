@@ -11,7 +11,7 @@ Deny list for blocklists that are not published as RPZ zone files. `deny-list.tx
 
 - `personal-deny-list.txt`: hand-entered domains, one per line, `#` comments allowed.
 - `blocklists.json`:
-  - `sources`: `{ "name", "url", "format" }` where `format` is `domains` (one name per line), `hosts` (`0.0.0.0 name`) or `adblock` (`||name^`; other rule types are ignored).
+  - `sources`: `{ "name", "url", "format" }` where `format` is `domains` (one name per line), `hosts` (`0.0.0.0 name`) `adblock` (`||name^`; other rule types are ignored) or `pihole-regex` (`(\.|^)zone$` and `^host$` rules; any other regex is rejected, since it cannot be listed as names).
   - `loaded_rpz_zones`: `{ "name", "url" }` of each RPZ zone file the DNS server already loads.
   - `max_entries`: the most entries written; see Build for which are dropped.
   - `hosts_ignore`: names in hosts files that are not blocklist entries.
