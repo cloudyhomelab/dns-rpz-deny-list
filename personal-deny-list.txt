@@ -1,0 +1,2 @@
+# Hand-entered deny entries, one domain per line; subdomains are blocked automatically.
+flightnetwork.com
