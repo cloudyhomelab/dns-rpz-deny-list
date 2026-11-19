@@ -1,6 +1,17 @@
 {
   "max_entries": 50000,
-  "sources": [],
+  "sources": [
+    {
+      "name": "lg-tv-strict-wildcard",
+      "url": "https://raw.githubusercontent.com/furkan-bayrak/lg-tv-blocklist/main/lists/strict-wildcard.txt",
+      "format": "pihole-regex"
+    },
+    {
+      "name": "lg-tv-strict-domains",
+      "url": "https://raw.githubusercontent.com/furkan-bayrak/lg-tv-blocklist/main/lists/strict-domains.txt",
+      "format": "domains"
+    }
+  ],
   "loaded_rpz_zones": [
     {
       "name": "hagezi-multi",
