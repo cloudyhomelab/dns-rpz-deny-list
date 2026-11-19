@@ -206,7 +206,7 @@ def write_atomically(path: Path, header: list[str], lines: list[str]) -> None:
     descriptor, temp_name = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.")
     try:
         with os.fdopen(descriptor, "w", encoding="utf-8", newline="\n") as handle:
-            handle.writelines(f"# {line}\n" for line in header)
+            handle.writelines(f"# {line}\n" if line else "#\n" for line in header)
             handle.writelines(f"{line}\n" for line in lines)
         os.replace(temp_name, path)
     except BaseException:
@@ -341,7 +341,7 @@ def build() -> list[str]:
         file=sys.stderr,
     )
     lines = sorted(final)
-    header = OUTPUT_HEADER + attribution(config)
+    header = [*OUTPUT_HEADER, "", *attribution(config), ""]
     write_atomically(OUTPUT_PATH, header, lines)
     if not problems:
         write_atomically(PREVIOUS_PATH, header, lines)
