@@ -16,6 +16,30 @@
       "license": "CC-BY-4.0",
       "author": "furkan-bayrak",
       "homepage": "https://github.com/furkan-bayrak/lg-tv-blocklist"
+    },
+    {
+      "name": "session-replay",
+      "url": "https://perflyst.github.io/PiHoleBlocklist/SessionReplay.txt",
+      "format": "domains",
+      "license": "MIT",
+      "author": "Perflyst",
+      "homepage": "https://github.com/Perflyst/PiHoleBlocklist"
+    },
+    {
+      "name": "smart-tv",
+      "url": "https://perflyst.github.io/PiHoleBlocklist/SmartTV.txt",
+      "format": "domains",
+      "license": "MIT",
+      "author": "Perflyst",
+      "homepage": "https://github.com/Perflyst/PiHoleBlocklist"
+    },
+    {
+      "name": "android-tracking",
+      "url": "https://perflyst.github.io/PiHoleBlocklist/android-tracking.txt",
+      "format": "domains",
+      "license": "MIT",
+      "author": "Perflyst",
+      "homepage": "https://github.com/Perflyst/PiHoleBlocklist"
     }
   ],
   "loaded_rpz_zones": [
