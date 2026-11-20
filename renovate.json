@@ -5,14 +5,26 @@
     "helpers:pinGitHubActionDigests",
     ":semanticCommits"
   ],
-  "enabledManagers": ["github-actions", "custom.regex"],
+  "enabledManagers": [
+    "github-actions",
+    "custom.regex",
+    "pre-commit",
+    "pep621"
+  ],
+  "pre-commit": {
+    "enabled": true
+  },
   "minimumReleaseAge": "3 days",
   "customManagers": [
     {
       "customType": "regex",
       "description": "Renovate's own version in the self-hosted workflow",
-      "managerFilePatterns": ["/^\\.github/workflows/[^/]+\\.ya?ml$/"],
-      "matchStrings": ["npx --yes renovate@(?<currentValue>\\d+\\.\\d+\\.\\d+)"],
+      "managerFilePatterns": [
+        "/^\\.github/workflows/[^/]+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "npx --yes renovate@(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
       "depNameTemplate": "renovate",
       "datasourceTemplate": "npm"
     }

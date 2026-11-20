@@ -1,0 +1,17 @@
+[project]
+name = "dns-rpz-deny-list"
+version = "0"
+description = "Deny list built from blocklists that are not published as RPZ zone files."
+license = "GPL-3.0-or-later"
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+dev = [
+  "pre-commit>=4.7.0",
+  "pre-commit-uv>=4.4.3",
+]
+
+[tool.uv]
+# Scripts only; there is no package to build or install.
+package = false

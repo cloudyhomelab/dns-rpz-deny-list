@@ -1,5 +1,20 @@
 # Contributing
 
+## Setup
+
+Needs [uv](https://docs.astral.sh/uv/).
+
+```sh
+uv sync
+uv run pre-commit install
+```
+
+- `uv sync` creates `.venv` with the tools pinned in `uv.lock`; the build itself needs only the standard library.
+- `pre-commit` then checks each commit: valid JSON and YAML, JSON formatted with 2-space indent (fixed in place), no duplicate source names or URLs in `blocklists.json`, LF line endings, final newline, no trailing whitespace, no merge markers or large files.
+- A commit with files the hooks fixed is stopped; review the fixes, `git add` them and commit again.
+- `uv run pre-commit run --all-files` checks the whole repository.
+- `.editorconfig` applies the same layout in editors that support it.
+
 ## Build
 
 ```sh
@@ -32,4 +47,5 @@ python3 scripts/build_deny_list.py
 - The job summary lists per-source counts and every `error: ` line; the pull request description repeats the errors.
 - Exit code `2` still opens the pull request, then fails the job so the errors get noticed; exit code `1` fails before any change.
 - `peter-evans/create-pull-request` commits and opens the pull request with a GitHub App token, so commits are signed as the app and the pull request triggers other workflows; with no changes left, it deletes the branch. Secrets: `CLOUDYHOME_BOT_CLIENT_ID`, `CLOUDYHOME_BOT_PRIVATE_KEY`; the app needs read and write access to contents and pull requests on this repository.
+- `.github/workflows/pre-commit.yml` runs the same hooks on every pull request, so a commit made without them installed is still checked.
 - `.github/workflows/renovate.yml` runs self-hosted Renovate (`npx renovate`) weekly and on manual dispatch with the same app token; `renovate.json` keeps GitHub Action pins (SHA plus version comment), the Python and Node versions in the workflows, and Renovate's own version up to date. Releases younger than 3 days are held back. The app additionally needs write access to issues (dependency dashboard), workflows and commit statuses, and read access to checks.
