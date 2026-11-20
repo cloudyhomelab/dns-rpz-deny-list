@@ -1,5 +1,20 @@
 # Contributing
 
+## Setup
+
+Needs [uv](https://docs.astral.sh/uv/).
+
+```sh
+uv sync
+uv run pre-commit install
+```
+
+- `uv sync` creates `.venv` with the tools pinned in `uv.lock`; the build itself needs only the standard library.
+- `pre-commit` then checks each commit: valid JSON and YAML, JSON formatted with 2-space indent (fixed in place), LF line endings, final newline, no trailing whitespace, no merge markers or large files.
+- A commit with files the hooks fixed is stopped; review the fixes, `git add` them and commit again.
+- `uv run pre-commit run --all-files` checks the whole repository.
+- `.editorconfig` applies the same layout in editors that support it.
+
 ## Build
 
 ```sh
