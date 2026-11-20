@@ -1,0 +1,2 @@
+# Domains never taken from the sources in blocklists.json, one per line.
+# Say why on the line above or after the domain, e.g. "example.com  # breaks the banking app".

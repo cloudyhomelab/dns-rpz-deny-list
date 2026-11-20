@@ -15,7 +15,7 @@ repos:
   - repo: local
     hooks:
       - id: check-blocklists
-        name: check blocklists.json for duplicate sources
+        name: check blocklists and list files for duplicates
         entry: python scripts/check_blocklists.py
         language: python
-        files: ^blocklists\.json$
+        files: ^(blocklists\.json|personal-deny-list\.txt|exclude-list\.txt)$

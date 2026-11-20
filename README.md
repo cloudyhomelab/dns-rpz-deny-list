@@ -9,6 +9,7 @@ Deny list built from blocklists that are not published as RPZ zone files. Each e
 ## Files
 
 - `personal-deny-list.txt`: hand-entered domains, one per line, `#` comments allowed.
+- `exclude-list.txt`: domains never taken from `sources`, one per line, with a `#` comment saying why. Matched exactly after normalizing; an excluded subdomain stays blocked if its parent is listed or already blocked. Personal entries are not affected.
 - `blocklists.json`:
   - `sources`: `{ "name", "url", "format", "license", "author", "homepage" }` where `license` is an SPDX identifier and `format` is `domains` (one name per line), `hosts` (`0.0.0.0 name`), `adblock` (`||name^`; other rule types are ignored) or `pihole-regex` (`(\.|^)zone$` and `^host$` rules; any other regex is rejected, since it cannot be listed as names).
   - `loaded_rpz_zones`: `{ "name", "url", "license", "author", "homepage" }` of each RPZ zone file whose blocked names are left out.
