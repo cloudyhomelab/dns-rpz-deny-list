@@ -12,3 +12,10 @@ repos:
       - id: trailing-whitespace
       - id: mixed-line-ending
         args: [--fix=lf]
+  - repo: local
+    hooks:
+      - id: check-blocklists
+        name: check blocklists.json for duplicate sources
+        entry: python scripts/check_blocklists.py
+        language: python
+        files: ^blocklists\.json$
