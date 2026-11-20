@@ -14,6 +14,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CONFIG_PATH = REPO_ROOT / "blocklists.json"
 PERSONAL_PATH = REPO_ROOT / "personal-deny-list.txt"
+EXCLUDE_PATH = REPO_ROOT / "exclude-list.txt"
 OUTPUT_PATH = REPO_ROOT / "deny-list.txt"
 PREVIOUS_PATH = REPO_ROOT / "deny-list.txt.previous"
 
@@ -228,6 +229,20 @@ def candidates_for(source: dict, hosts_ignore: set[str]) -> list[str]:
     raise BuildError(f"unknown format {source_format!r}")
 
 
+def read_excludes(problems: list[str]) -> set[str]:
+    try:
+        exclude_text = EXCLUDE_PATH.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return set()
+    except OSError as error:
+        problems.append(f"{EXCLUDE_PATH.name} skipped: {error}")
+        return set()
+    exclude_candidates = candidates_domains(exclude_text)
+    excludes, report = collect(EXCLUDE_PATH.name, exclude_candidates)
+    problems.extend(f"{EXCLUDE_PATH.name} entry {raw!r} skipped: not a valid domain" for raw in report.rejected)
+    return excludes
+
+
 def print_report(report: SourceReport) -> None:
     print(f"source {report.name}: {report.accepted} accepted, {len(report.rejected)} rejected", file=sys.stderr)
     for rejected in report.rejected[:REJECT_SAMPLE_SIZE]:
@@ -262,6 +277,7 @@ def build() -> list[str]:
     problems = []
     config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
     hosts_ignore = {name.lower() for name in config.get("hosts_ignore", [])}
+    excludes = read_excludes(problems)
 
     rank: dict[str, int] = {}
     personal: set[str] = set()
@@ -323,6 +339,16 @@ def build() -> list[str]:
             rank.setdefault(domain, previous_rank)
         print(f"errors in this run: merged {len(previous)} entries from {PREVIOUS_PATH.name}", file=sys.stderr)
 
+    # Excludes trim what sources and the previous list bring in; personal entries are deliberate and stay.
+    merged_count = len(rank)
+    for domain in sorted(excludes & personal):
+        print(f"exclude entry kept because it is a personal entry: {domain}", file=sys.stderr)
+    for domain in sorted(excludes - rank.keys()):
+        print(f"exclude entry matched nothing: {domain}", file=sys.stderr)
+    excluded = {domain for domain in excludes - personal if domain in rank}
+    for domain in excluded:
+        del rank[domain]
+
     covered = {domain for domain in rank if is_covered(domain, exact, wildcard)}
     for domain in sorted(covered & personal):
         print(f"personal entry already blocked by a loaded zone: {domain}", file=sys.stderr)
@@ -335,9 +361,16 @@ def build() -> list[str]:
     if len(final) < len(collapsed):
         dropped = len(collapsed) - len(final)
         print(f"warning: {dropped} entries over max_entries {max_entries} dropped, latest sources first", file=sys.stderr)
+    # An entry blocks all its subdomains, so excluding a subdomain of a listed or loaded name has no effect.
+    for domain in sorted(excludes - personal):
+        parent = next((ancestor for ancestor in strict_ancestors(domain) if ancestor in final), None)
+        if parent is not None:
+            print(f"warning: excluded {domain} is still blocked through listed parent {parent}", file=sys.stderr)
+        elif domain in exact or any(ancestor in wildcard for ancestor in strict_ancestors(domain)):
+            print(f"warning: excluded {domain} is still blocked by a loaded zone", file=sys.stderr)
     print(
-        f"merged {len(rank) + len(covered)}, already loaded {len(covered)}, collapsed {len(rank) - len(collapsed)}, "
-        f"written {len(final)}",
+        f"merged {merged_count}, excluded {len(excluded)}, already loaded {len(covered)}, "
+        f"collapsed {len(rank) - len(collapsed)}, written {len(final)}",
         file=sys.stderr,
     )
     lines = sorted(final)

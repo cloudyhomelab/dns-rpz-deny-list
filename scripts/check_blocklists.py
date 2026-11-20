@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Fail if a blocklists.json lists the same name or URL more than once across sources and loaded RPZ zones."""
+"""Fail on duplicates: a name or URL repeated across blocklists.json sections, or a domain repeated in a list file."""
 
 import json
 import sys
@@ -20,16 +20,23 @@ def duplicates(config: dict) -> list[str]:
     return problems
 
 
+def duplicate_lines(text: str) -> list[str]:
+    entries = [line.split("#", 1)[0].strip().lower() for line in text.splitlines()]
+    counts = Counter(entry for entry in entries if entry)
+    return [f"{value!r} appears {count} times" for value, count in counts.items() if count > 1]
+
+
 def main(paths: list[str]) -> int:
     failed = False
     for path in paths:
         try:
-            config = json.loads(Path(path).read_text(encoding="utf-8"))
+            text = Path(path).read_text(encoding="utf-8")
+            problems = duplicates(json.loads(text)) if path.endswith(".json") else duplicate_lines(text)
         except (OSError, ValueError) as error:
             print(f"{path}: {error}", file=sys.stderr)
             failed = True
             continue
-        for problem in duplicates(config):
+        for problem in problems:
             print(f"{path}: {problem}", file=sys.stderr)
             failed = True
     return 1 if failed else 0
