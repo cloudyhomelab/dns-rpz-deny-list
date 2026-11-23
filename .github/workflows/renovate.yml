@@ -41,4 +41,4 @@ jobs:
           RENOVATE_ONBOARDING: "false"
           RENOVATE_REQUIRE_CONFIG: required
           LOG_LEVEL: info
-        run: npx --yes renovate@44.236.5
+        run: npx --yes renovate@44.257.2
