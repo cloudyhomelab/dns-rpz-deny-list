@@ -26,12 +26,14 @@ androidtvchannels-pa.googleapis.com
 androidtvlauncherxfe-pa.googleapis.com
 androidtvwatsonfe-pa.googleapis.com
 api-hub.samsungyosemite.com
-api-launcher-em.hismarttv.com
+api.eu.hismarttv.com
 api.euro.hismarttv.com
+api.thetake.com
 api.uca.cloud.unity3d.com
 api.us.hismarttv.com
 app-lgwebos.pluto.tv
 app.adjust.com
+app.hbbtv.hse24.com
 appspot-preview.l.google.com
 au.app.lgwebostv.com
 au.elastic.lgwebostv.com
@@ -46,6 +48,8 @@ cloud.arqiva.tv
 collect-eu-fy2014.myhomescreen.tv
 collect-us-fy2014.myhomescreen.tv
 control-zoo-dai-default.tvinteractive.tv
+control.tvinteractive.tv
+control2.tvinteractive.tv
 coordinator-production-28516768.us-east-1.elb.amazonaws.com
 crashlogs.whatsapp.net
 d1jwpcr0q4pcq0.cloudfront.net
@@ -77,6 +81,7 @@ hbbtv.sixx.de
 hbbtv.superrtl.de
 hbbtv01p.anixe.net
 hbbtvapp.sonnenklar.tv
+hse-ctv.com
 i-stream.pl
 ichnaea.netflix.com
 id.google.de
@@ -100,10 +105,10 @@ live.direct.ly
 logrocket.com
 logs.locarta.co
 managed.xmpp.foxtel.com.au
+mcp.tvinteractive.tv
 med.heyzap.com
 mhc-sec-us.myhomescreen.tv
 mqtt-mini.facebook.com
-msg-em.hismarttv.com
 nbc-jite.nbcuni.com
 nettv.corio.com
 nextlgsdp.com
@@ -137,6 +142,7 @@ start.digitaltext.rtl.de
 stats.gc.apple.com
 tags.tiqcdn.com
 tv.ads.spotx.tv
+tvmeta-dynamic.tvinteractive.tv
 ueiwsp.com
 us-api.samsungyosemite.com
 usage-eu-fy2014.myhomescreen.tv
